@@ -1,122 +1,78 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React from 'react';
+import { useDashboardData } from './hooks/useDashboardData';
+import BlurText from './components/bits/BlutText';
+import HarvestingCards from './components/dashboard/HarvestingCards';
+import HoldingsTable from './components/dashboard/HoldingsTable';
+import { motion } from 'framer-motion'; // <-- Import motion here
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { isLoading, isError } = useDashboardData();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center font-sans text-white">
+        <BlurText text="Fetching Investment Portfolio & Tax Metrics..." className="text-xl font-medium text-blue-500" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center font-sans text-red-500">
+        <p className="text-lg font-semibold">Error syncing portfolio parameters. Please refresh.</p>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <div className="min-h-screen bg-background text-white p-4 md:p-12 font-sans antialiased selection:bg-cardBlue/30">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Animated Header */}
+        <motion.header 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-border/40"
         >
-          Count is {count}
-        </button>
-      </section>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white to-textGray bg-clip-text text-transparent">
+              Tax Optimisation
+            </h1>
+            <p className="text-xs text-textGray mt-0.5">
+              Simulate instant tax loss harvesting cycles over asset layers.
+            </p>
+          </div>
+        </motion.header>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+        <main className="space-y-8">
+          {/* Animated Cards Container */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+          >
+            <HarvestingCards />
+          </motion.div>
+          
+          {/* Animated Table Container */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+            className="space-y-3"
+          >
+            <div className="flex justify-between items-center px-1">
+              <h2 className="text-lg font-semibold text-white tracking-tight">Holdings Asset Registry</h2>
+              <p className="text-xs text-textGray">Click headers to sort values</p>
+            </div>
+            <HoldingsTable />
+          </motion.div>
+        </main>
+        
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
